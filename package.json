@@ -1,0 +1,23 @@
+{
+  "name": "tree-sitter-idris2",
+  "version": "0.0.1",
+  "description": "Tree Sitter grammar for Idris 2",
+  "main": "bindings/node",
+  "scripts": {
+    "test": "tree-sitter test"
+  },
+  "keywords": [
+    "parser",
+    "tree-sitter",
+    "idris2"
+  ],
+  "author": "Greg Werbin",
+  "license": "ISC",
+  "dependencies": {
+    "nan": "^2.15.0"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.20.6",
+    "typescript-language-server": "^0.9.7"
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "name": "idris2",
+  "rules": {
+    "module": {
+      "type": "REPEAT",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_text"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_number"
+          }
+        ]
+      }
+    },
+    "statement": {
+      "type": "SYMBOL",
+      "name": "expression"
+    },
+    "expression": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_text"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_number"
+        }
+      ]
+    },
+    "_integerDecimal": {
+      "type": "PATTERN",
+      "value": "[0-9]+(?:_[0-9]+)*"
+    },
+    "_integerHexadecimal": {
+      "type": "PATTERN",
+      "value": "0x[0-9A-Fa-f]+(?:_[0-9A-Fa-f]+)*"
+    },
+    "_integerOctal": {
+      "type": "PATTERN",
+      "value": "0o[0-7]+(?:_[0-7]+)*"
+    },
+    "_integerBinary": {
+      "type": "PATTERN",
+      "value": "0b[01]+(?:_[01]+)*"
+    },
+    "integer": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_integerDecimal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_integerHexadecimal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_integerOctal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_integerBinary"
+        }
+      ]
+    },
+    "double": {
+      "type": "PATTERN",
+      "value": "[0-9]+\\.[0-9]+(?:[eE][-+]?[0-9]+)"
+    },
+    "_number": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "integer"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "double"
+        }
+      ]
+    },
+    "char": {
+      "type": "PATTERN",
+      "value": "'(?:[^'\\\\]|\\\\(?:.|[0-9]+|x[0-9A-Fa-f]+|o[0-7]+|NUL|SOH|STX|ETX|EOT|ENQ|ACK|BEL|BS|HT|LF|VT|FF|CR|SO|SI|DLE|DC1|DC2|DC3|DC4|NAK|SYN|ETB|CAN|EM|SUB|ESC|FS|GS|RS|US|SP|DEL))'"
+    },
+    "string": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "\""
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "\\"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[^\"\\n\\r]+"
+                }
+              ]
+            }
+          },
+          {
+            "type": "STRING",
+            "value": "\""
+          }
+        ]
+      }
+    },
+    "_text": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "char"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        }
+      ]
+    }
+  },
+  "extras": [
+    {
+      "type": "PATTERN",
+      "value": "\\s"
+    }
+  ],
+  "conflicts": [],
+  "precedences": [],
+  "externals": [],
+  "inline": [],
+  "supertypes": []
+}
+
