@@ -22,6 +22,19 @@ module.exports = grammar({
     statement: $ => $.expression,
     expression: $ => choice($._text, $._number),
 
+    // Identifiers
+
+    // TODO: Unicode
+    _identifierHeadLower: $ => /a-z/,
+    _identifierHeadUpper: $ => /A-Z/,
+    // _identifierHead: $ => choice('_', $._identifierHeadUpper, $._identifierHeadLower),
+    // _identifierRest: $ => choice('-', '_', '\\', /[A-Za-z]/, /[^\x00-\x9F]/),
+    // _identifierRest: $ => choice('-', '_', '\\', /[A-Za-z]/),
+    _identifierRest: $ => choice('_', '\\', /[A-Za-z]/),
+    _identifierUpper: $ => seq($._identifierHeadUpper, repeat($._identifierRest)),
+    _identifierLower: $ => seq($._identifierHeadLower, repeat($._identifierRest)),
+    identifier: $ => choice($._identifierUpper, $._identifierLower),
+    identifierDotted: $ => seq($.identifier, repeat(seq('.', $.identifier))),
 
     // Numeric literals
 
@@ -45,7 +58,7 @@ module.exports = grammar({
     // Text literals
 
     // https://github.com/idris-lang/Idris2/blob/03f23b0/src/Libraries/Text/Lexer.idr#L337-L357=
-    char: $ => token(seq(
+    char: $ => seq(
       "'",
       choice(
         seq(
@@ -61,25 +74,32 @@ module.exports = grammar({
         /[^'\\]/
       ),
       "'"
-    )),
+    ),
 
     // https://github.com/idris-lang/Idris2/blob/03f23b0/src/Libraries/Text/Lexer.idr#L310-L335=
     // interpolation: $ => seq('\\{', $.expression, '}'),
     // interpolation: $ => seq('\\{', /[^\\}]+/, '}'),
-    string: $ => token(
-      seq(
-        '"',
-        repeat(choice(
-          // $.interpolation,
-          seq('\\{', /[^\\}]+/, '}'),
-          '\\\\',
-          /\\./,
-          /[^"\n\r]+/
-        )),
-        '"',
-      ),
+    string: $ => seq(
+      '"',
+      repeat(choice(
+        // $.interpolation,
+        seq('\\{', /[^\}]+/, '}'),
+        '\\\\',
+        /\\./,
+        /[^"\n\r]+/
+      )),
+      '"',
     ),
 
     _text: $ => choice($.char, $.string),
+
+    // Function application
+
+    // Comments
+    // _lineCommentLeader: $ => '--',
+    // lineComment: $ => prec(0, seq($._lineCommentLeader, /.*$/))
+    // _lineCommentLeader: $ => '--',
+    // lineComment: $ => prec(0, seq('--', /.*\n?/))
   }
+
 });

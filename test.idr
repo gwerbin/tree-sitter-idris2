@@ -20,3 +20,11 @@
 "asdf \\ z"
 "asdf \r"
 "asdf \{x + 1}"
+
+_
+_quietly
+x_y_z
+cooperative.baseball
+coöperate
+αβγ
+Mutant.A.B
