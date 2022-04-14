@@ -17,13 +17,11 @@ module.exports = grammar({
   name: 'idris2',
 
   rules: {
+    // module: $ => repeat(choice($._text, $._number)),
     module: $ => repeat($.statement),
-
     statement: $ => $.expression,
-
     expression: $ => choice($._text, $._number),
 
-    module: $ => repeat(choice($._text, $._number)),
 
     // Numeric literals
 
@@ -47,23 +45,36 @@ module.exports = grammar({
     // Text literals
 
     // https://github.com/idris-lang/Idris2/blob/03f23b0/src/Libraries/Text/Lexer.idr#L337-L357=
-    // Pattern borrowed from idris2-nvim
-    char: $ => /'(?:[^'\\]|\\(?:.|[0-9]+|x[0-9A-Fa-f]+|o[0-7]+|NUL|SOH|STX|ETX|EOT|ENQ|ACK|BEL|BS|HT|LF|VT|FF|CR|SO|SI|DLE|DC1|DC2|DC3|DC4|NAK|SYN|ETB|CAN|EM|SUB|ESC|FS|GS|RS|US|SP|DEL))'/,
-
-    // interpolation: $ => seq('\{', $.expression, '}'),
-    //interpolation: $ => /\\\{[^\}]+\}/,
+    char: $ => token(seq(
+      "'",
+      choice(
+        seq(
+          '\\',
+          choice(
+            ...asciiControlAbbrevs,
+            /o[0-7]+/,
+            /x[0-9A-Fa-f]+/,
+            /[0-9]+/,
+            /./
+          )
+        ),
+        /[^'\\]/
+      ),
+      "'"
+    )),
 
     // https://github.com/idris-lang/Idris2/blob/03f23b0/src/Libraries/Text/Lexer.idr#L310-L335=
-    //escape_sequence: $ => prec(1, /\\./),
-
+    // interpolation: $ => seq('\\{', $.expression, '}'),
+    // interpolation: $ => seq('\\{', /[^\\}]+/, '}'),
     string: $ => token(
       seq(
         '"',
         repeat(choice(
-          //$.interpolation,
-          //$.escape_sequence,
-          '\\',
-          /[^"\n\r]+/,
+          // $.interpolation,
+          seq('\\{', /[^\\}]+/, '}'),
+          '\\\\',
+          /\\./,
+          /[^"\n\r]+/
         )),
         '"',
       ),
